@@ -25,5 +25,4 @@ Ubuntu サーバーの基本的な設定を自動化する Bash スクリプト�
 
 ### クイックスタート
 ```bash
-# ワンクリック
-wget -O ubuntu_init.sh https://raw.githubusercontent.com/yourusername/your-repo/main/ubuntu_init.sh && chmod +x ubuntu_init.sh && sudo ./ubuntu_init.sh
+wget -O ubuntu_init.sh https://raw.githubusercontent.com/notecdotcom/ubuntu-inti/main/ubuntu_init.sh && chmod +x ubuntu_init.sh && sudo ./ubuntu_init.sh
