@@ -1,56 +1,56 @@
 #!/bin/bash
 
-# 檢查是否為 root 權限
+# root権限チェック
 if [ "$EUID" -ne 0 ]; then
-  echo "請使用 sudo 或以 root 身份執行此腳本"
+  echo "sudo または root ユーザーで実行してください"
   exit 1
 fi
 
-# 系統更新與升級
-echo "正在更新系統..."
+# システムの更新とアップグレード
+echo "システムを更新中..."
 apt update && apt upgrade -y
 if [ $? -ne 0 ]; then
-  echo "系統更新失敗，請檢查網絡連接"
+  echo "システム更新失敗 - ネットワーク接続を確認してください"
   exit 1
 fi
 
-# 防火墻配置
-echo "配置防火墻..."
+# ファイアウォール設定
+echo "ファイアウォールを設定中..."
 ufw allow 22/tcp
-ufw --force enable  # 強制啟用避免交互提示
-echo "已允許 SSH 端口並啟用 UFW"
+ufw --force enable  # 対話プロンプトを回避
+echo "SSHポート(22/tcp)を許可しUFWを有効化"
 
-# 啟用 BBR 擁塞控制
-echo "啟用 BBR..."
+# BBR輻輳制御の有効化
+echo "BBRを有効化中..."
 sed -i '/net.core.default_qdisc/d' /etc/sysctl.conf
 sed -i '/net.ipv4.tcp_congestion_control/d' /etc/sysctl.conf
 echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
 echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
 sysctl -p >/dev/null
-echo "BBR 已啟用"
+echo "BBRが正常に有効化されました"
 
-# 時區設置
-echo "設置時區為上海..."
-timedatectl set-timezone Asia/Shanghai
+# タイムゾーン設定
+echo "タイムゾーンを東京に設定..."
+timedatectl set-timezone Asia/Tokyo
 
-# 修改 gai.conf 優先 IPv4
-echo "調整網絡優先級..."
+# IPv4優先設定
+echo "ネットワーク優先度を調整中..."
 sed -i 's/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/' /etc/gai.conf
 systemctl restart systemd-resolved
 
-# 安裝工具
-echo "安裝常用工具..."
+# パッケージインストール
+echo "ツールをインストール中..."
 apt install -y nala fish eza
 if [ $? -ne 0 ]; then
-  echo "軟件安裝失敗"
+  echo "パッケージインストール失敗"
   exit 1
 fi
 
-# 修改默認 shell 為 fish
-echo "設置 Fish 為默認 Shell..."
-chsh -s /usr/bin/fish "$SUDO_USER"  # 保留原用戶身份
-echo "Fish Shell 已設置"
+# デフォルトシェルの変更
+echo "デフォルトシェルをFishに設定..."
+chsh -s /usr/bin/fish "$SUDO_USER"  # 元ユーザー権限を保持
+echo "Fishシェルが設定されました"
 
-# 完成提示
-echo -e "\n\033[32m初始化完成！建議立即重啟系統\033[0m"
-echo "可執行以下命令重啟：sudo reboot"
+# 完了メッセージ
+echo -e "\n\033[32m初期化完了！システムの再起動を推奨します\033[0m"
+echo "再起動コマンド: sudo reboot"
