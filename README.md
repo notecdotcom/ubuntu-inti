@@ -25,11 +25,4 @@
 
 ### 快速開始
 ```bash
-# 下載腳本
-wget https://raw.githubusercontent.com/yourusername/your-repo/main/ubuntu_init.sh
-
-# 賦予執行權限
-chmod +x ubuntu_init.sh
-
-# 運行腳本（需 root 權限）
-sudo ./ubuntu_init.sh
+wget -O ubuntu_init.sh https://raw.githubusercontent.com/notecdotcom/ubuntu-inti/main/ubuntu_init.sh && chmod +x ubuntu_init.sh && sudo ./ubuntu_init.sh
